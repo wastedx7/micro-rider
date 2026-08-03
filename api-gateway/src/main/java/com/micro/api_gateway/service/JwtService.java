@@ -1,7 +1,7 @@
 package com.micro.api_gateway.service;
 
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -45,10 +45,6 @@ public class JwtService {
         }
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -61,5 +57,14 @@ public class JwtService {
 
     public String extractUUID(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> extractRoles(String token) {
+        return extractClaim(token, claims -> claims.get("roles", List.class));
     }
 }

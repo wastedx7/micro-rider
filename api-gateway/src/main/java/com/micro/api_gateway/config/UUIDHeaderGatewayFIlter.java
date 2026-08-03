@@ -21,9 +21,9 @@ public class UUIDHeaderGatewayFIlter extends AbstractGatewayFilterFactory<UUIDHe
         return (exchange, chain) -> ReactiveSecurityContextHolder.getContext()
             .flatMap(ctx -> {
                 Authentication auth = ctx.getAuthentication();
-                if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof String UUID) {
+                if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof String userId) {
                     ServerWebExchange mutated = exchange.mutate()
-                        .request(r -> r.header("X-User-ID", UUID))
+                        .request(r -> r.header("X-User-ID", userId))
                         .build();
                     return chain.filter(mutated);
                 }
