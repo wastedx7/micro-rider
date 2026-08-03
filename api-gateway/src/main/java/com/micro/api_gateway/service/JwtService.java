@@ -1,6 +1,7 @@
 package com.micro.api_gateway.service;
 
 import java.util.Date;
+import java.util.UUID;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -58,7 +59,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractEmail(String token) {
+    public String extractUUID(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 }
