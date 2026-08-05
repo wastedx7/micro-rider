@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package com.micro_rider.proto.location;
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.location";
+option java_outer_classname = "LocationUpdateProto";
+
+message DriverLocationUpdate {
+  string driver_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  float bearing = 4;        // Heading direction in degrees (0-360)
+  float speed = 5;          // Speed in m/s
+  int64 timestamp_epoch_ms = 6;
+}

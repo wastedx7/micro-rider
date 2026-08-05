@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package com.micro_rider.proto.ride;
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.ride";
+option java_outer_classname = "RideEventsProto";
+
+enum RideStatus {
+  RIDE_STATUS_UNSPECIFIED = 0;
+  REQUESTED = 1;
+  MATCHING = 2;
+  DRIVER_ASSIGNED = 3;
+  IN_PROGRESS = 4;
+  COMPLETED = 5;
+  CANCELLED = 6;
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  string address = 3;
+}
+
+message RideRequestedEvent {
+  string ride_id = 1;
+  string rider_id = 2;
+  Location pickup_location = 3;
+  Location dropoff_location = 4;
+  int64 timestamp_epoch_ms = 5;
+}
+
+message RideStatusChangeEvent {
+  string ride_id = 1;
+  string rider_id = 2;
+  string driver_id = 3;
+  RideStatus status = 4;
+  int64 updated_at_epoch_ms = 5;
+}

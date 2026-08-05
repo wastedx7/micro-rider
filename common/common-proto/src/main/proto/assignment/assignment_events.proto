@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.assignment;
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.assignment";
+option java_outer_classname = "AssignmentEventsProto";
+
+message DriverAssignmentRequest {
+  string assignment_id = 1;
+  string ride_id = 2;
+  double pickup_latitude = 3;
+  double pickup_longitude = 4;
+  int32 search_radius_meters = 5;
+  int64 timeout_epoch_ms = 6;
+}
+
+message DriverMatchNotification {
+  string assignment_id = 1;
+  string ride_id = 2;
+  string driver_id = 3;
+  double pickup_latitude = 4;
+  double pickup_longitude = 5;
+  double dropoff_latitude = 6;
+  double dropoff_longitude = 7;
+}
