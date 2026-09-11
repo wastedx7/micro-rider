@@ -94,7 +94,7 @@ A microservice-based ride-hailing backend (Spring Boot 4 / Java 21, gRPC-first, 
 | location-service | — | (TBD) |
 | driver-assignment-service | — | (client) |
 | notification-service | 8084 | 9084 |
-| user-service | (TBD) | — |
+| user-service | 8085 | — |
 | websocket-server-rider | 8090 | 9100 |
 | websocket-server-driver | 8091 | 9101 |
 

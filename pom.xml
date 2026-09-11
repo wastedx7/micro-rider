@@ -28,6 +28,7 @@
         <module>apps/location-service</module>
         <module>apps/driver-assignment-service</module>
         <module>apps/notification-service</module>
+        <module>apps/user-service</module>
         <module>apps/websocket-server-rider</module>
         <module>apps/websocket-server-driver</module>
     </modules>
