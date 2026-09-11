@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.notification;
+
+import "common/common.proto";
+import "assignment/assignment_events.proto";
+import "ride/ride_events.proto";
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.notification";
+option java_outer_classname = "NotificationServiceProto";
+
+service NotificationService {
+  rpc PushDriverMatch(com.ridehailing.proto.assignment.DriverMatchNotification)
+      returns (NotificationResponse);
+  rpc PushRideStatus(com.ridehailing.proto.ride.RideStatusChangeEvent)
+      returns (NotificationResponse);
+}
+
+message NotificationResponse {
+  bool delivered = 1;
+  string target_id = 2;
+  string request_id = 3;
+  string message = 4;
+}

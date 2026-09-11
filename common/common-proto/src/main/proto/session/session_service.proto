@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.session;
+
+import "common/common.proto";
+import "assignment/assignment_events.proto";
+import "ride/ride_events.proto";
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.session";
+option java_outer_classname = "SessionServiceProto";
+
+service DriverSessionService {
+  rpc RegisterDriverSession(RegisterSessionRequest) returns (SessionResponse);
+  rpc RemoveDriverSession(RemoveSessionRequest) returns (SessionResponse);
+  rpc PushDriverOffer(com.ridehailing.proto.assignment.DriverMatchNotification)
+      returns (SessionResponse);
+}
+
+service RiderSessionService {
+  rpc RegisterRiderSession(RegisterSessionRequest) returns (SessionResponse);
+  rpc RemoveRiderSession(RemoveSessionRequest) returns (SessionResponse);
+  rpc PushRideStatus(com.ridehailing.proto.ride.RideStatusChangeEvent)
+      returns (SessionResponse);
+}
+
+message RegisterSessionRequest {
+  com.ridehailing.proto.common.RequestContext context = 1;
+  string user_id = 2;
+  string session_id = 3;
+}
+
+message RemoveSessionRequest {
+  com.ridehailing.proto.common.RequestContext context = 1;
+  string user_id = 2;
+  string session_id = 3;
+}
+
+message SessionResponse {
+  bool accepted = 1;
+  string user_id = 2;
+  string session_id = 3;
+  string request_id = 4;
+  string message = 5;
+}

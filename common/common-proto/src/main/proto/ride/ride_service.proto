@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.ride;
+
+import "common/common.proto";
+import "ride/ride_events.proto";
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.ride";
+option java_outer_classname = "RideServiceProto";
+
+service RideService {
+  rpc CreateRide(CreateRideRequest) returns (RideResponse);
+  rpc GetRide(GetRideRequest) returns (RideResponse);
+  rpc CancelRide(CancelRideRequest) returns (RideResponse);
+  rpc GetRideStatus(GetRideStatusRequest) returns (RideStatusResponse);
+}
+
+message CreateRideRequest {
+  com.ridehailing.proto.common.RequestContext context = 1;
+  string rider_id = 2;
+  Location pickup_location = 3;
+  Location dropoff_location = 4;
+  string client_request_id = 5;
+}
+
+message GetRideRequest {
+  com.ridehailing.proto.common.RequestContext context = 1;
+  string ride_id = 2;
+}
+
+message CancelRideRequest {
+  com.ridehailing.proto.common.RequestContext context = 1;
+  string ride_id = 2;
+  string reason = 3;
+}
+
+message GetRideStatusRequest {
+  com.ridehailing.proto.common.RequestContext context = 1;
+  string ride_id = 2;
+}
+
+message RideResponse {
+  string ride_id = 1;
+  string rider_id = 2;
+  string driver_id = 3;
+  Location pickup_location = 4;
+  Location dropoff_location = 5;
+  RideStatus status = 6;
+  int64 created_at_epoch_ms = 7;
+  int64 updated_at_epoch_ms = 8;
+  string request_id = 9;
+}
+
+message RideStatusResponse {
+  string ride_id = 1;
+  string driver_id = 2;
+  RideStatus status = 3;
+  int64 updated_at_epoch_ms = 4;
+  string request_id = 5;
+}
