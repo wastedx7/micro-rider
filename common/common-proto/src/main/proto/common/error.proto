@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.common;
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.common";
+option java_outer_classname = "ErrorProto";
+
+message ErrorDetail {
+  string code = 1;
+  string message = 2;
+  bool retryable = 3;
+  string correlation_id = 4;
+  string field = 5;
+}

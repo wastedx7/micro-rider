@@ -2,6 +2,7 @@ package com.micro.api_gateway.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Collections;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -21,6 +22,9 @@ public class JwtService {
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
+    @Value("${security.jwt.issuer:micro-rider-user-service}")
+    private String issuer;
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -38,8 +42,9 @@ public class JwtService {
     public boolean isTokenValid(String token) {
         try {
             // parseSignedClaims validates signature, format, and expiration automatically
-            extractAllClaims(token);
-            return true;
+            Claims claims = extractAllClaims(token);
+            return issuer.equals(claims.getIssuer())
+                    && "access".equals(claims.get("token_type", String.class));
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -65,6 +70,7 @@ public class JwtService {
 
     @SuppressWarnings("unchecked")
     public List<String> extractRoles(String token) {
-        return extractClaim(token, claims -> claims.get("roles", List.class));
+        List<String> roles = extractClaim(token, claims -> claims.get("roles", List.class));
+        return roles == null ? Collections.emptyList() : List.copyOf(roles);
     }
 }

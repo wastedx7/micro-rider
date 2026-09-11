@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.events;
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.events";
+option java_outer_classname = "EventEnvelopeProto";
+
+message EventEnvelope {
+  string event_id = 1;
+  string event_type = 2;
+  string event_version = 3;
+  string aggregate_id = 4;
+  string aggregate_type = 5;
+  string correlation_id = 6;
+  string causation_id = 7;
+  string producer = 8;
+  int64 occurred_at_epoch_ms = 9;
+  string subject_id = 10;
+  bytes payload = 11;
+}

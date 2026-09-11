@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.ridehailing.proto.auth;
+
+option java_multiple_files = true;
+option java_package = "com.ridehailing.proto.auth";
+option java_outer_classname = "AuthClaimsProto";
+
+message AuthClaims {
+  string subject_id = 1;
+  repeated string roles = 2;
+  string token_type = 3;
+  string issuer = 4;
+  int64 issued_at_epoch_seconds = 5;
+  int64 expires_at_epoch_seconds = 6;
+  string token_id = 7;
+  string tenant_id = 8;
+  string driver_id = 9;
+  repeated string scopes = 10;
+}
