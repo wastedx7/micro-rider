@@ -26,6 +26,9 @@ public class UUIDHeaderGatewayFIlter extends AbstractGatewayFilterFactory<UUIDHe
                         .request(r -> r.headers(headers -> {
                             headers.remove("X-User-ID");
                             headers.set("X-User-ID", userId);
+                            headers.remove("X-User-Roles");
+                            headers.set("X-User-Roles", auth.getAuthorities().stream()
+                                .map(a -> a.getAuthority()).sorted().reduce((a, b) -> a + "," + b).orElse(""));
                         }))
                         .build();
                     return chain.filter(mutated);
