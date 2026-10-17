@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package com.ridehailing.proto.notification;
 
-import "common/common.proto";
 import "assignment/assignment_events.proto";
 import "ride/ride_events.proto";
 
