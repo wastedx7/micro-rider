@@ -23,7 +23,10 @@ public class UUIDHeaderGatewayFIlter extends AbstractGatewayFilterFactory<UUIDHe
                 Authentication auth = ctx.getAuthentication();
                 if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof String userId) {
                     ServerWebExchange mutated = exchange.mutate()
-                        .request(r -> r.header("X-User-ID", userId))
+                        .request(r -> r.headers(headers -> {
+                            headers.remove("X-User-ID");
+                            headers.set("X-User-ID", userId);
+                        }))
                         .build();
                     return chain.filter(mutated);
                 }
