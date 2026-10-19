@@ -2,6 +2,24 @@
 
 Micro-rider is a learning-oriented ride-hailing backend built as a Java/Spring microservice system. A rider requests a ride, nearby drivers are discovered, a driver is assigned, and status updates are delivered in real time.
 
+## Current status
+
+Phase 0 foundations and the Phase 1 authentication foundation are complete. Phase 2 ride-service work is in progress on the `phase2` branch.
+
+Implemented so far:
+
+- User registration, login, refresh, and logout.
+- JWT access tokens with canonical claims.
+- Redis-backed gateway login rate limiting.
+- Gateway JWT protection and trusted identity propagation.
+- Supabase-compatible PostgreSQL configuration.
+- Ride persistence and lifecycle state machine.
+- Ride gRPC service and authenticated HTTP endpoints.
+- Kafka ride event publication.
+- Ride lifecycle and ownership tests.
+
+The driver assignment, location, notification, and WebSocket workflows remain future implementation work.
+
 ## Phase 0 in plain English
 
 Phase 0 prepares the shared foundation. It does not yet provide a complete ride-booking product.
@@ -34,6 +52,25 @@ apps/websocket-server-* Real-time rider/driver connections (future implementatio
 phase0_plans            Plans and conventions for the foundation phase
 docker-compose.yml      Local PostgreSQL, Redis, and Kafka infrastructure
 ```
+
+## Supabase setup
+
+Ride and user persistence use PostgreSQL-compatible configuration. For Supabase, copy the environment template and replace the placeholders:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Set these values in `.env`:
+
+```text
+SUPABASE_DB_URL=jdbc:postgresql://db.<project-ref>.supabase.co:5432/postgres?sslmode=require
+SUPABASE_DB_USERNAME=postgres
+SUPABASE_DB_PASSWORD=<your-password>
+SECRET_KEY=<base64-encoded-secret>
+```
+
+Flyway applies the database migrations when the user and ride services start. Never commit `.env` or real credentials. `.env.example` is safe to commit.
 
 ## Local infrastructure
 
@@ -68,7 +105,38 @@ Kafka topics created by Compose are `ride-status`, `driver-location`, `driver-as
 | Rider WebSocket | 8090 | 9100 |
 | Driver WebSocket | 8091 | 9101 |
 
-The business services are currently mostly application shells. Their planned responsibilities are documented in [PLAN.md](PLAN.md).
+The location, assignment, notification, and WebSocket services are currently mostly application shells. Their planned responsibilities are documented in [PLAN.md](PLAN.md).
+
+## Authentication and ride API
+
+The API Gateway runs on `http://localhost:8080`.
+
+Register and log in through the gateway:
+
+```http
+POST /auth/register
+Content-Type: application/json
+
+{"email":"rider@example.com","password":"strong-password","role":"RIDER"}
+```
+
+Use the returned access token for ride requests:
+
+```http
+POST /rides
+Authorization: Bearer <access-token>
+Content-Type: application/json
+
+{"pickup":{"latitude":12.9,"longitude":77.6,"address":"Pickup"},"dropoff":{"latitude":12.95,"longitude":77.62,"address":"Dropoff"}}
+```
+
+Available ride routes:
+
+- `POST /rides` creates a ride for the authenticated rider.
+- `GET /rides/{rideId}` retrieves a ride owned by the authenticated rider.
+- `DELETE /rides/{rideId}` cancels a ride owned by the authenticated rider.
+- `POST /auth/refresh` rotates a refresh token.
+- `POST /auth/logout` revokes a refresh token.
 
 ## Build
 
@@ -79,6 +147,12 @@ mvn clean install
 ```
 
 The build generates Java protobuf and gRPC classes from `common/common-proto/src/main/proto`. If Maven cannot access its default local repository, provide a writable Maven repository with `-Dmaven.repo.local=<path>`.
+
+To verify the current Phase 2 ride-service work:
+
+```powershell
+mvn -q -pl apps\ride-service -am test
+```
 
 ## Phase 0 contracts
 
