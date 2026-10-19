@@ -36,9 +36,27 @@ public class RideApplicationService {
         return repository.findById(rideId).orElseThrow(() -> new RideNotFoundException(rideId));
     }
 
+    @Transactional(readOnly = true)
+    public Ride getForRider(UUID rideId, UUID riderId) {
+        Ride ride = get(rideId);
+        if (!ride.getRiderId().equals(riderId)) {
+            throw new RideAccessDeniedException();
+        }
+        return ride;
+    }
+
     @Transactional
     public Ride cancel(UUID rideId) {
         Ride ride = get(rideId);
+        ride.transitionTo(RideStatus.CANCELLED);
+        Ride saved = repository.save(ride);
+        publishStatus(saved);
+        return saved;
+    }
+
+    @Transactional
+    public Ride cancelForRider(UUID rideId, UUID riderId) {
+        Ride ride = getForRider(rideId, riderId);
         ride.transitionTo(RideStatus.CANCELLED);
         Ride saved = repository.save(ride);
         publishStatus(saved);
@@ -82,5 +100,9 @@ public class RideApplicationService {
 
     public static class RideNotFoundException extends RuntimeException {
         public RideNotFoundException(UUID rideId) { super("Ride not found: " + rideId); }
+    }
+
+    public static class RideAccessDeniedException extends RuntimeException {
+        public RideAccessDeniedException() { super("Rider does not own this ride"); }
     }
 }
